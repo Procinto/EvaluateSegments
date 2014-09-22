@@ -40,15 +40,15 @@ namespace Segmentspace
 		// The new() on a struct fills the data with "zeros",
 		// so IsValid is initially false, as it should be.
 
-		public Segment CreateNextSegmentOfRandomSize(long nextLeft, int maxSize, long maxValue)
+		public Segment CreateNewSegmentOfRandomSize(long newLeft, int maxSize, long maxValue)
 		{
-			if (nextLeft > maxValue) { return this.Invalidate(); }
+			if (newLeft > maxValue) { return this.Invalidate(); }
 
 			int actualSize = R.Next(1, maxSize);
-			if (nextLeft >= maxValue - actualSize) { return this.Invalidate(); }
+			if (newLeft >= maxValue - actualSize) { return this.Invalidate(); }
 
-			this.Left = nextLeft;
-			this.Right = nextLeft - 1 + actualSize;
+			this.Left = newLeft;
+			this.Right = newLeft - 1 + actualSize;
 			this.IsValid = true;
 
 			return this;
@@ -69,6 +69,9 @@ namespace Segmentspace
 
 	}
 
+	/// <summary>
+	/// Extensions for List&lt;Segment&gt; and such.
+	/// </summary>
 	public static class ExtendListOfSegments
 	{
 		static Random R = new Random(17);

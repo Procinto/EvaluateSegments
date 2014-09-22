@@ -15,21 +15,21 @@ namespace Segmentspace
 		public static int MaxNumberOfConsecutiveSplits = 3;
 	}
 
-	class EfficientSql
+	class GenerateSegments
 	{
-		// Internal parameters
-		// How many segments to update in a bunch
-		// Correction: assume they all fit in memory.
-
 		// Holds data until flashed to the database.
 		static List<Segment> AllSegments;
 
 		/// <summary>
-		/// Just for EfficientSql
+		/// Just for GenerateSegments
 		/// </summary>
 		private static Random R = new Random(57);
 
-		static void Main(string[] args)
+		/// <summary>
+		/// Generate in memory.
+		/// </summary>
+		/// <returns></returns>
+		static List<Segment> GenerateList()
 		{
 			/// The whole bunch, or the next bunch, of segments.
 			AllSegments = new List<Segment>();
@@ -39,7 +39,7 @@ namespace Segmentspace
 
 			for (int iteration = 0; iteration < ParametersOfExperiment.NoMoreIterationsThan; iteration++) {
 				// Create the next segment.
-				Segment s = new Segment().CreateNextSegmentOfRandomSize(nextAvailableValue, 
+				Segment s = new Segment().CreateNewSegmentOfRandomSize(nextAvailableValue,
 					ParametersOfExperiment.MaxSegmentSize, ParametersOfExperiment.NoLargerValueThan);
 				AllSegments.Add(s);
 
@@ -51,19 +51,28 @@ namespace Segmentspace
 					AllSegments.SplitSegment(xSegmentToSplit);
 				}
 
-				// Update database as needed.
-				// Correction: let's just assume it all fits in memory
-				// and update the database at the end.
-
 				// Stop if reached the max value.
 				nextAvailableValue += s.Size;
 				if (nextAvailableValue > ParametersOfExperiment.NoLargerValueThan) { break; }
 
 			}
 
-			// Update the database as needed here.
-			;
+			return AllSegments;
+		}
+
+		/// <summary>
+		/// Store the segments in the database.
+		/// </summary>
+		/// <param name="listOfSegments"></param>
+		static void FlushTheList(IList<Segment> listOfSegments)
+		{
 			// TODO HERE
+		}
+
+		static void Main(string[] args)
+		{
+			var ListOfSegments = GenerateList();
+			FlushTheList(ListOfSegments);
 		}
 	}
 }
